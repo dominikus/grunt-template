@@ -1,0 +1,6 @@
+*sass-cache
+dist/*
+node_modules/*
+grunt-template.sublime-project
+grunt-template.sublime-workspace
+Gruntfile.js
