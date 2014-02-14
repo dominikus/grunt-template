@@ -6,3 +6,5 @@ node_modules/*
 js/build/*
 css/build/*
 Gruntfile.js
+
+/bower_components/

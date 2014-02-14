@@ -11,7 +11,7 @@ module.exports = (grunt) ->
 
 			scripts: 
 				files: ['js/*.js']
-				tasks: ['jshint']
+				tasks: []
 			
 			coffee: 
 				files: ['coffee/*.coffee']
@@ -32,6 +32,19 @@ module.exports = (grunt) ->
 			html:
 				files: ["*.html", "*.rb"]				
 
+		"bower-install":
+
+			target:
+				src: ['index.html'],
+				###
+				cwd: ''
+				dependencies: Boolean (default: true)
+				devDependencies: Boolean (default: false)
+				exclude: []
+				fileTypes: {}
+				ignorePath: ''
+				###
+			
 		
 		## dev
 
@@ -61,13 +74,9 @@ module.exports = (grunt) ->
 					port: 8000
 					base: './'
 
-		jshint: 
-			beforeconcat: ['js/*.js']
-
 		concat: 
 			default: 
 				src: [
-					'js/libs/*.js'
 					'js/main.js'
 				]
 				dest: 'js/build/scripts.js'		
@@ -120,6 +129,7 @@ module.exports = (grunt) ->
 	grunt.loadNpmTasks 'grunt-contrib-coffee' 
 	grunt.loadNpmTasks 'grunt-contrib-clean' 
 	grunt.loadNpmTasks 'grunt-contrib-copy'
+	grunt.loadNpmTasks 'grunt-bower-install'
 
 	## tasks
 	grunt.registerTask('default', [
