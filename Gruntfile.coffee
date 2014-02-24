@@ -1,123 +1,119 @@
 module.exports = (grunt) ->
+
 	grunt.initConfig(
 
 		pkg: grunt.file.readJSON('package.json')
 		
+		config:
+			dev:
+				options:
+					variables:
+						'environment': 'dev'
+						'compass-env': 'development'
+			dist:
+				options:
+					variables:
+						'environment': 'dist'
+						'compass-env': 'production'
+
 		## watch
 		watch:
 			options: 
 				livereload: true
-				spawn: false	
+				spawn: false
 
-			scripts: 
-				files: ['js/*.js']
-				tasks: []
+			bower:
+				files: ['bower_components/**/*']	
+				tasks: ['bower_concat']
 			
 			coffee: 
-				files: ['coffee/*.coffee']
-				tasks: ['coffee', 'concat']
+				files: ['src/coffee/*.coffee', 'src/coffee/**/*.coffee']
+				tasks: ['coffee']
 			
 			sass: 
-				files: ['**/*.sass']
+				files: ['src/sass/*.sass', 'src/sass/**/*.sass']
 				tasks: ['compass']
 				
-			
 			images: 
-				files: ['images/**/*.png,jpg,gif', 'images/*.png,jpg,gif']
-				tasks: ['imagemin']
+				files: ['src/images/**/*.png,jpg,gif', 'src/images/*.png,jpg,gif']
+				tasks: ['copy']
+
+			html:
+				files: ['src/*.html', 'src/**/*.html']
+				tasks: ['copy']
 				
 			gruntfile:
 				files: ["Gruntfile.coffee"]
-
-			html:
-				files: ["*.html", "*.rb"]				
-
-		"bower-install":
-
-			target:
-				src: ['index.html'],
-				###
-				cwd: ''
-				dependencies: Boolean (default: true)
-				devDependencies: Boolean (default: false)
-				exclude: []
-				fileTypes: {}
-				ignorePath: ''
-				###
-			
 		
-		## dev
 
+
+		bower_concat:
+			default:
+				dest: '<%= grunt.config.get("environment") %>/js/libs.js'
+		
 		coffee: 
-			glob_to_multiple: 
-				expand: true
-				flatten: true
-				cwd: '.'
-				src: ['coffee/*.coffee']
-				dest: 'js'
-				ext: '.js'
-
+			default:
+				options:
+					join: true
+				files:
+					'<%= grunt.config.get("environment") %>/js/main.js' : ['src/coffee/main.coffee', 'src/coffee/**/*.coffee']
 		
 		compass:
-			dist:
+			default:
 				options: 
-					environment: 'production'
-				
-			dev: 
-				options: {}
-			
-		
+					environment: '<%= grunt.config.get("compass-env") %>'		
 
 		connect: 
-			server: 
+			default:
 				options: 
 					port: 8000
-					base: './'
-
-		concat: 
-			default: 
-				src: [
-					'js/main.js'
-				]
-				dest: 'js/build/scripts.js'		
+					base: './<%= grunt.config.get("environment") %>/'
 
 		# dist
 
-		clean: 
-			dist:
-				src: ["dist/*"]
+		clean:
+			default:
+				src: ['<%= grunt.config.get("environment") %>/*']
 
 		copy:
-			dist:
-				files:
-					[				
+			default:
+				files: 
+					[
+						expand: true
 						src: '*.html'
-						dest: 'dist/'
+						cwd: 'src'
+						dest: '<%= grunt.config.get("environment") %>/'
 					,
-						cwd: 'assets/fonts'
-						src: '**/*'
-						dest: 'dist/assets/fonts'
+						expand: true
+						cwd: 'src'
+						src: 'assets/**/*'
+						dest: '<%= grunt.config.get("environment") %>/'
+					,
+						expand: true
+						cwd: 'src'
+						src: 'js/**/*'
+						dest: '<%= grunt.config.get("environment") %>/'
 					]
 
 		cssmin: 
 			combine: 
 				files: 
-					'dist/css/build/styles.css': ['css/build/styles.css']
+					'<%= grunt.config.get("environment") %>/css/styles.css': ['<%= grunt.config.get("environment") %>/css/styles.css']
 		
 
 		uglify: 
-			build: 
-				src: 'js/build/scripts.js'
-				dest: 'dist/js/build/scripts.js'
+			default: 
+				'<%= grunt.config.get("environment") %>/js/libs.js' : '<%= grunt.config.get("environment") %>/js/libs.js'
+				'<%= grunt.config.get("environment") %>/js/main.js' : '<%= grunt.config.get("environment") %>/js/main.js'
 		
 
 		imagemin: 
-			dynamic: 
+			default: 
 				files: [
 					expand: true
-					cwd: 'assets/images/'
-					src: ['**/*.png,jpg,gif']
-					dest: 'dist/assets/images/'
+					cwd: '<%= grunt.config.get("environment") %>/assets/'
+					src: ['**/*.{png,jpg,gif}']
+					dest: '<%= grunt.config.get("environment") %>/assets/'
 				]
 
 	)
@@ -125,31 +121,33 @@ module.exports = (grunt) ->
 	## setup 
 	require('load-grunt-tasks')(grunt)
 
-	grunt.loadNpmTasks 'grunt-contrib-compass' 
-	grunt.loadNpmTasks 'grunt-contrib-coffee' 
-	grunt.loadNpmTasks 'grunt-contrib-clean' 
-	grunt.loadNpmTasks 'grunt-contrib-copy'
-	grunt.loadNpmTasks 'grunt-bower-install'
-
 	## tasks
 	grunt.registerTask('default', [
+		'config:dev'
 		'coffee'
-		'compass:dev'
-		'concat'
+		'compass'
 	])
 
 	grunt.registerTask('dev', [
+		'config:dev'
+		'clean'
+		'copy'
+		'bower_concat'
+		'coffee'
+		'compass'
 		'connect'
 		'watch'
 	])
 
 	grunt.registerTask('dist', [
+		'config:dist'
 		'clean'
 		'copy'
+		'bower_concat'
 		'coffee'
-		'compass:dist'
-		'concat'
+		'compass'
 		'uglify'
 		'cssmin'
 		'imagemin'
+		'connect:default:keepalive'
 	])
