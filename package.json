@@ -17,7 +17,8 @@
     "grunt-contrib-clean": "~0.5.0",
     "grunt-bower-concat": "~0.2.4",
     "grunt-config": "~0.1.4",
-    "grunt-notify": "~0.2.17"
+    "grunt-notify": "~0.2.17",
+    "grunt-include-replace": "~2.0.0"
   },
   "dependencies": {
     "load-grunt-tasks": "~0.2.0"
