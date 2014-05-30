@@ -132,6 +132,10 @@ module.exports = (grunt) ->
 
 
 		uglify:
+			options:
+				compress:
+					drop_console: true
+				mangle: true
 			default:
 				files: [
 					'<%= grunt.config.get("environment") %>/js/libs.js' : '<%= grunt.config.get("environment") %>/js/libs.js'
