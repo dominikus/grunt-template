@@ -10,3 +10,5 @@ Gruntfile.js
 /bower_components/
 
 /dev/
+
+/.ftppass
