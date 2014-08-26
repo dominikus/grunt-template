@@ -57,8 +57,12 @@ module.exports = (grunt) ->
 				files: ['src/sass/**/*.sass']
 				tasks: ['compass']
 
-			images:
-				files: ['src/images/*.png,jpg,gif']
+			assets:
+				files: ['src/assets/**/*']
+				tasks: ['copy']
+
+			data:
+				files: ['src/data/**/*']
 				tasks: ['copy']
 
 			html:
@@ -134,6 +138,11 @@ module.exports = (grunt) ->
 						expand: true
 						cwd: 'src'
 						src: 'js/**/*'
+						dest: '<%= grunt.config.get("environment") %>/'
+					,
+						expand: true
+						cwd: 'src'
+						src: 'data/**/*'
 						dest: '<%= grunt.config.get("environment") %>/'
 					]
 
