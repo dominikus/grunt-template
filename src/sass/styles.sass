@@ -6,6 +6,7 @@
 
 html, body
 	height: 100%
+	background: black
 
 .wrapper
 	min-height: 100%
@@ -22,4 +23,50 @@ footer, .push
 footer
 	background: #F0F0F0
 	padding-top: .5em
+
+
+svg
+	width: 100%
+	height: 300px
+
+	circle.measure
+		stroke: white
+		fill: none
+		opacity: 0.25
+
+		&.forward
+			fill: blue
+			stroke: blue
+
+		&.backward
+			fill: red
+			stroke: red
+
+	.stationLabel
+		fill: white
+		stroke: none
+		text-anchor: end
+
+	.line-name
+		fill: white
+		stroke: none
+		font-size: 24px
+		font-weight: 900
+		text-anchor: middle
+
+	.line-name-circle
+		fill: lightgrey
+
+
+
+div.ttip
+	width: 350px
+	background: white
+	color: black
+	z-index: 999
+	position: absolute
+	+user-select(none)
+
+	p
+		text-align: right
 
